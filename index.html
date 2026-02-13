@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Evita - A Special Gift</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes float { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-10px) rotate(2deg); } }
+        .main-flower { 
+            animation: float 3s ease-in-out infinite; 
+            font-size: 8rem; 
+            filter: drop-shadow(0 10px 20px rgba(236, 72, 153, 0.3));
+        }
+        
+        .falling-letter { 
+            position: absolute; 
+            cursor: pointer; 
+            user-select: none; 
+            font-size: 3.5rem; 
+            font-weight: bold;
+            color: #ec4899;
+            /* FAST SPEED: 1.5 seconds */
+            animation: fall 1.5s linear forwards; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        @keyframes fall { to { transform: translateY(110vh) rotate(45deg); } }
+
+        .envelope-body { width: 320px; height: 200px; background-color: #fbcfe8; position: relative; border-radius: 0 0 12px 12px; cursor: pointer; margin-top: 180px; }
+        
+        .flap { 
+            position: absolute; top: 0; left: 0; width: 0; height: 0; 
+            border-left: 160px solid transparent; border-right: 160px solid transparent; 
+            border-top: 110px solid #f9a8d4; transform-origin: top; transition: transform 0.6s ease; z-index: 3;
+        }
+        .flap-open { transform: rotateX(180deg); }
+        
+        .letter { 
+            position: absolute; bottom: 5px; left: 10px; right: 10px; height: 180px; 
+            background: #ffffff; padding: 25px; border-radius: 8px; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            z-index: 1; opacity: 0; overflow-y: auto;
+        }
+        
+        .letter-open { 
+            opacity: 1; 
+            transform: translateY(-120px); 
+            height: 280px; 
+            z-index: 4; 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .bouquet-pop { animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-size: 10rem; }
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .letter::-webkit-scrollbar { width: 4px; }
+        .letter::-webkit-scrollbar-thumb { background: #f9a8d4; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-pink-50 min-h-screen flex items-center justify-center overflow-hidden font-serif">
+
+    <div id="stage1" class="text-center flex flex-col items-center">
+        <div class="main-flower mb-4">🌷</div>
+        <h1 class="text-3xl text-pink-800 font-bold mb-8">A Carnation for Evita</h1>
+        <button onclick="goToGame()" class="bg-pink-400 hover:bg-pink-500 text-white font-bold py-4 px-12 rounded-full shadow-lg transition active:scale-95">
+            Accept Gift
+        </button>
+    </div>
+
+    <div id="stage2" class="hidden fixed inset-0 bg-pink-100 flex flex-col items-center justify-center">
+        <div class="absolute top-10 text-center z-50 pointer-events-none">
+            <h2 class="text-2xl font-bold text-pink-600 mb-2">Catch the Letters!</h2>
+            <div id="name-display" class="flex gap-2 text-4xl font-black text-pink-200">
+                <span id="L0">E</span><span id="L1">V</span><span id="L2">I</span><span id="L3">T</span><span id="L4">A</span>
+            </div>
+        </div>
+        <div id="game-area" class="w-full h-full relative"></div>
+    </div>
+
+    <div id="stage3" class="hidden flex-col items-center justify-center">
+        <h2 class="text-pink-800 text-2xl font-bold mb-4 animate-pulse">Beautifully caught! Open your letter:</h2>
+        <div class="envelope-body shadow-2xl" onclick="openLetter()">
+            <div id="flap" class="flap"></div>
+            <div id="letter" class="letter text-pink-900 border border-pink-100">
+                <p class="font-bold border-b border-pink-100 mb-3 text-lg">Evita!</p>
+                <div class="text-[14px] leading-relaxed space-y-4">
+                    <p class="italic text-pink-600">Happy Valentine’s Evita Jomarie Joberta Ramos</p>
+                    <p>I can’t buy you flowers since you’re so layo, and I don’t know how to express my love for you (WOW) so as a person who loves sending sweet paragraphs to people, I will send you this message instead (as a sign of my love).</p>
+                    <p>It’s truly a privilege to know you and be part of your life. Thank you for being genuine and for listening to my chismis and my reklamo sa buhay. Wala mo gin judge akon pagkatawo. It might seem simple, but it makes me feel like I finally belong somewhere SOMEWHERE?! life really gave me a 2-in-1 promo, Li and you.</p>
+                    <p>I hope you find someone who will love you the way you deserve, like super obsessed-but-healthy obsessed, someone who will treat you right (and spoil you with everything) spoiled ka daan whegakuehwiwuwhw.</p>
+                    <p>I hope madiligan.</p>
+                    <p>More complaining and libak to come ebita marie, love you!</p>
+                </div>
+                <button onclick="showBouquet(event)" class="mt-6 w-full bg-pink-500 hover:bg-pink-600 text-white text-sm py-3 px-4 rounded-lg transition-colors font-sans font-bold shadow-md">
+                    Click for your bouquet 💐
+                </button>
+                <p class="mt-6 text-right font-medium text-pink-600 text-sm">- Yen</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="stage4" class="hidden fixed inset-0 bg-white/95 backdrop-blur-sm z-[100] flex flex-col items-center justify-center text-center p-4">
+        <div class="bouquet-pop">💐</div>
+        <h2 class="text-4xl font-bold text-pink-800 mt-4">A Full Bouquet for Evita!</h2>
+        <p class="text-pink-600 mt-2 max-w-xs">Because someone as special as you deserves the world.</p>
+        <button onclick="location.reload()" class="mt-8 text-pink-400 underline text-sm">Read it again</button>
+    </div>
+
+    <script>
+        const nameArray = ['E', 'V', 'I', 'T', 'A'];
+        let currentLetterIndex = 0;
+        let gameInterval;
+        
+        const stage1 = document.getElementById('stage1');
+        const stage2 = document.getElementById('stage2');
+        const stage3 = document.getElementById('stage3');
+        const stage4 = document.getElementById('stage4');
+        const gameArea = document.getElementById('game-area');
+
+        function goToGame() {
+            stage1.style.display = 'none';
+            stage2.classList.remove('hidden');
+            updateNameDisplay();
+            gameInterval = setInterval(spawnLetter, 400); 
+        }
+
+        function updateNameDisplay() {
+            for(let i=0; i<nameArray.length; i++) {
+                const el = document.getElementById('L' + i);
+                if(i < currentLetterIndex) {
+                    el.className = 'text-pink-500 opacity-100';
+                } else if (i === currentLetterIndex) {
+                    el.className = 'text-pink-600 scale-125 transition-transform duration-300 font-black';
+                } else {
+                    el.className = 'text-pink-200';
+                }
+            }
+        }
+
+        function spawnLetter() {
+            if (currentLetterIndex >= nameArray.length) {
+                clearInterval(gameInterval);
+                return;
+            }
+            
+            const letter = document.createElement('div');
+            const isTarget = Math.random() > 0.4;
+            const letterToSpawn = isTarget ? nameArray[currentLetterIndex] : nameArray[Math.floor(Math.random() * nameArray.length)];
+            
+            letter.innerHTML = letterToSpawn;
+            letter.className = 'falling-letter';
+            letter.style.left = (Math.random() * 80 + 10) + '%';
+            letter.style.top = '-100px';
+
+            letter.addEventListener('mousedown', (e) => {
+                e.stopPropagation();
+                if (letterToSpawn === nameArray[currentLetterIndex]) {
+                    currentLetterIndex++;
+                    updateNameDisplay();
+                    letter.remove();
+                    
+                    if (currentLetterIndex >= nameArray.length) {
+                        clearInterval(gameInterval);
+                        setTimeout(finishGame, 500);
+                    }
+                }
+            });
+
+            gameArea.appendChild(letter);
+            
+            letter.addEventListener('animationend', () => {
+                if (letter.parentElement) {
+                    letter.remove();
+                }
+            });
+        }
+
+        function finishGame() {
+            stage2.classList.add('hidden');
+            stage3.classList.remove('hidden');
+            stage3.classList.add('flex');
+        }
+
+        function openLetter() {
+            document.getElementById('flap').classList.add('flap-open');
+            setTimeout(() => {
+                document.getElementById('letter').classList.add('letter-open');
+            }, 400);
+        }
+
+        function showBouquet(event) {
+            event.stopPropagation();
+            stage4.classList.remove('hidden');
+            stage4.classList.add('flex');
+        }
+    </script>
+</body>
+</html>
